@@ -42,6 +42,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -52,10 +53,12 @@ import coil.memory.MemoryCache
 import com.example.openinappandroidassesment.R
 import com.example.openinappandroidassesment.models.DashBoardModel
 import com.example.openinappandroidassesment.models.Link
+import com.example.openinappandroidassesment.network.NetworkResponse
 import com.example.openinappandroidassesment.ui.theme.BaseColor
 import com.example.openinappandroidassesment.ui.theme.Blue
 import com.example.openinappandroidassesment.ui.theme.FabColor
 import com.example.openinappandroidassesment.ui.theme.GradientBlue
+import com.example.openinappandroidassesment.ui.theme.GridColor
 import com.example.openinappandroidassesment.ui.theme.LightBlue
 import com.example.openinappandroidassesment.ui.theme.LightPurple
 import com.example.openinappandroidassesment.ui.theme.LightRed
@@ -466,7 +469,6 @@ fun AnalyticItem(
 @Composable
 fun GraphWidget(modifier: Modifier = Modifier) {
 
-
     // b'coz the overal_data_chart was returning null, so I had to create a dummy data
     val xAxis = listOf(
         0f, 1f, 2f, 2f, 3f, 4f, 5f, 6f, 7f, 8f
@@ -499,10 +501,11 @@ fun GraphWidget(modifier: Modifier = Modifier) {
 
                 Text(
                     text = "Overview", fontSize = 14.sp, color = Color.Gray,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
                 TextWithIcon(
                     text = "22 Aug - 23 Sept",
+                    textSize = 12.sp,
                     R.drawable.clock,
                     tint = Color.Gray
                 )
@@ -516,6 +519,7 @@ fun GraphWidget(modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .height(200.dp),
             )
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
 
@@ -525,7 +529,7 @@ fun GraphWidget(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun TextWithIcon(text: String, icon: Int, tint: Color) {
+fun TextWithIcon(text: String, textSize: TextUnit=14.sp, icon: Int, tint: Color) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -534,11 +538,11 @@ fun TextWithIcon(text: String, icon: Int, tint: Color) {
             .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
             .padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
-        Text(text = text, fontSize = 14.sp, color = Color.Black)
+        Text(text = text, fontSize = textSize, color = Color.Black)
         Spacer(modifier = Modifier.size(4.dp))
         Icon(
             painter = painterResource(id = icon), contentDescription = null, tint = tint,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(16.dp)
         )
     }
 
@@ -614,8 +618,24 @@ fun LineGraph(
             lineChart.xAxis.gridLineWidth = 0.5f
             lineChart.axisLeft.gridLineWidth = 0.5f
 
+            lineChart.xAxis.gridColor = GridColor.toArgb()
+            lineChart.axisLeft.gridColor = GridColor.toArgb()
+
             lineChart.invalidate()
             lineChart
         }
     )
+}
+
+@Composable
+public fun ErrorScreen(result: String) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Text(text = result, color = Color.Red, fontSize = 24.sp)
+
+    }
+
 }

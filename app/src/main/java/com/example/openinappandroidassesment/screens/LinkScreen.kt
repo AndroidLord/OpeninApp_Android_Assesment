@@ -45,6 +45,7 @@ import com.example.openinappandroidassesment.ui.theme.Green
 import com.example.openinappandroidassesment.ui.theme.LightGreen
 import com.example.openinappandroidassesment.ui.theme.LightBlue
 import com.example.openinappandroidassesment.ui.theme.UnselectedColor
+import com.example.openinappandroidassesment.utils.ErrorScreen
 import com.example.openinappandroidassesment.utils.GraphWidget
 import com.example.openinappandroidassesment.utils.GreetingMessage
 import com.example.openinappandroidassesment.utils.HorizontalAnalytics
@@ -59,7 +60,7 @@ fun LinkScreen(navController: NavController, viewModel: MainViewModel) {
 
     when (val result = dashboardResult.value) {
         is NetworkResponse.Error -> {
-            Text(text = result.message)
+            ErrorScreen(result.message)
         }
 
         is NetworkResponse.Loading -> {
@@ -80,12 +81,19 @@ fun LinkScreen(navController: NavController, viewModel: MainViewModel) {
 
 }
 
+
+
 @Composable
 fun LoadingScreen() {
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column {
-            CircularProgressIndicator()
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CircularProgressIndicator(
+                color = FabColor,
+            )
             Text(text = "Loading")
         }
     }

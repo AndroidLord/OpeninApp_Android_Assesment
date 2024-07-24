@@ -15,6 +15,7 @@ val BottomWhite = Color(255, 255, 255)
 val FabColor = Color(14, 111, 255)
 
 val UnselectedColor = Color(153, 156, 160)
+val GridColor = Color(245, 245, 245)
 
 val Blue = Color(14, 111, 255)
 val LightBlue = Color(232, 241, 255)
