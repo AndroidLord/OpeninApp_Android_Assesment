@@ -1,6 +1,7 @@
 package com.example.openinappandroidassesment.screens
 
 import android.widget.Space
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -19,15 +20,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -51,7 +56,9 @@ import com.example.openinappandroidassesment.utils.GreetingMessage
 import com.example.openinappandroidassesment.utils.HorizontalAnalytics
 import com.example.openinappandroidassesment.utils.IconWithText
 import com.example.openinappandroidassesment.utils.LinkTabList
+import com.example.openinappandroidassesment.utils.copyToClipboard
 import com.example.openinappandroidassesment.viewModel.MainViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun LinkScreen(navController: NavController, viewModel: MainViewModel) {
@@ -164,6 +171,9 @@ fun DashboardScreen(value: DashBoardModel) {
 fun LinkScreen_Success(dashBoard: DashBoardModel) {
 
     val scrollState = rememberScrollState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -207,7 +217,10 @@ fun LinkScreen_Success(dashBoard: DashBoardModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Link Tab List
-        LinkTabList(dashBoard.data.top_links, dashBoard.data.recent_links)
+        LinkTabList(dashBoard.data.top_links, dashBoard.data.recent_links){
+            copyToClipboard(it, context)
+            Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show()
+        }
 
         // View All Links
         IconWithText(

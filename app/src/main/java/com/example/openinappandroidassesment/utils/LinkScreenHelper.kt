@@ -37,6 +37,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -77,7 +79,7 @@ import java.util.Calendar
 
 
 @Composable
-public fun LinkTabList(topLinkList: List<Link>, recentLinkList: List<Link>) {
+public fun LinkTabList(topLinkList: List<Link>, recentLinkList: List<Link>, onCopyClick: (text: String) -> Unit) {
 
     var topLink by remember { mutableStateOf(true) }
     val list = remember {
@@ -156,7 +158,7 @@ public fun LinkTabList(topLinkList: List<Link>, recentLinkList: List<Link>) {
 
     Column {
         list.take(4).forEach { link ->
-            LinkItem(link, rememberCustomImageLoader())
+            LinkItem(link, rememberCustomImageLoader(), onCopyClick)
         }
     }
 
@@ -175,32 +177,27 @@ public fun selectedTabLink(link: Boolean): Modifier {
     return modifier
 }
 
+
+
 @Composable
-fun LinkItem(link: Link, customImageLoader: ImageLoader) {
-
-
+fun LinkItem(link: Link, customImageLoader: ImageLoader, onCopyClick : (text: String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.Center
     ) {
-
-        Card(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(76.dp)
-                .clip(SharpBottomRoundedTopShape(8.dp)),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White,
-            )
+                .clip(SharpBottomRoundedTopShape(16.dp))
+                .background(Color.White)
         ) {
-
-            Column( // Wrap Card contents with Column for vertical alignment
-                verticalArrangement = Arrangement.Center, // Center contents vertically
-                modifier = Modifier.fillMaxHeight() // Ensure Column fills Card's height
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxHeight()
             ) {
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -208,7 +205,6 @@ fun LinkItem(link: Link, customImageLoader: ImageLoader) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
-
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.weight(1f)
@@ -220,11 +216,8 @@ fun LinkItem(link: Link, customImageLoader: ImageLoader) {
                             imageLoader = customImageLoader,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
-                                .border(
-                                    1.dp, BaseColor, RoundedCornerShape(8.dp)
-                                )
+                                .border(1.dp, BaseColor, RoundedCornerShape(8.dp))
                                 .size(48.dp)
-
                         )
                         Spacer(modifier = Modifier.size(8.dp))
                         HeaderWithSubheader(
@@ -233,13 +226,11 @@ fun LinkItem(link: Link, customImageLoader: ImageLoader) {
                             limiter = true
                         )
                     }
-
                     HeaderWithSubheader(
                         headerText = link.total_clicks,
                         subheaderText = "clicks",
                         limiter = false
                     )
-
                 }
             }
         }
@@ -250,15 +241,13 @@ fun LinkItem(link: Link, customImageLoader: ImageLoader) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(SharpTopRoundedBottomShape(cornerRadius = 8.dp))
-                .background(LightBlue)
                 .drawBehind {
-                    drawRoundRect(
-                        color = FabColor,
-                        style = DOTTED_STROKE,
-                        cornerRadius = CornerRadius(8.dp.toPx())
-                    )
+                    customSharpTopRoundedBottomShape(16.dp, FabColor)
                 }
+                .clip(SharpTopRoundedBottomShape(16.dp))
+                .background(LightBlue)
+
+                .clickable { onCopyClick(link.web_link) }
                 .padding(8.dp)
         ) {
             Text(
@@ -275,7 +264,6 @@ fun LinkItem(link: Link, customImageLoader: ImageLoader) {
             )
         }
     }
-
 }
 
 @Composable
