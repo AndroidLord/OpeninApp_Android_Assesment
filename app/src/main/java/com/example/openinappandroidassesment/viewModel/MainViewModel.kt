@@ -23,7 +23,7 @@ class MainViewModel(
         _dashboardResult.value = NetworkResponse.Loading
         viewModelScope.launch {
             try {
-                val response = repository.getDashBoard(token)
+                val response = repository.getDashBoard()
                 _dashboardResult.value = when {
                     response.isSuccessful -> {
                         response.body()?.let { NetworkResponse.Success(it) } ?: NetworkResponse.Error("Empty response body")

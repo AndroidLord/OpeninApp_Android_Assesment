@@ -7,8 +7,8 @@ import retrofit2.Response
 
 class MainRepository {
 
-    suspend fun getDashBoard(token: String): Response<DashBoardModel> {
-        return openApp_API.getDashBoard(token)
+    suspend fun getDashBoard(): Response<DashBoardModel> {
+        return openApp_API.getDashBoard()
     }
 
 }

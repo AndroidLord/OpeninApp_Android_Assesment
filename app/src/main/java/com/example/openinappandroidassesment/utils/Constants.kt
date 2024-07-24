@@ -11,3 +11,7 @@ val DOTTED_STROKE = Stroke(
     width = 1f,
     pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
 )
+
+val MONTH_LIST = listOf(
+    "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
+)

@@ -1,11 +1,14 @@
 package com.example.openinappandroidassesment.screens
 
+import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -34,12 +38,14 @@ import com.example.openinappandroidassesment.models.DashBoardModel
 import com.example.openinappandroidassesment.network.NetworkResponse
 import com.example.openinappandroidassesment.ui.theme.BaseColor
 import com.example.openinappandroidassesment.ui.theme.Blue
+import com.example.openinappandroidassesment.ui.theme.BorderBlue
 import com.example.openinappandroidassesment.ui.theme.BorderGreen
 import com.example.openinappandroidassesment.ui.theme.FabColor
 import com.example.openinappandroidassesment.ui.theme.Green
 import com.example.openinappandroidassesment.ui.theme.LightGreen
 import com.example.openinappandroidassesment.ui.theme.LightBlue
 import com.example.openinappandroidassesment.ui.theme.UnselectedColor
+import com.example.openinappandroidassesment.utils.GraphWidget
 import com.example.openinappandroidassesment.utils.GreetingMessage
 import com.example.openinappandroidassesment.utils.HorizontalAnalytics
 import com.example.openinappandroidassesment.utils.IconWithText
@@ -61,7 +67,9 @@ fun LinkScreen(navController: NavController, viewModel: MainViewModel) {
         }
 
         is NetworkResponse.Success -> {
-            LinkScreen_Success(result.value)
+
+            DashboardScreen(result.value)
+            //LinkScreen_Success(result.value)
         }
 
         null -> {
@@ -84,17 +92,14 @@ fun LoadingScreen() {
 
 }
 
+
 @Composable
-fun LinkScreen_Success(dashBoard: DashBoardModel) {
+fun DashboardScreen(value: DashBoardModel) {
 
-    val scrollState = rememberScrollState()
-
-
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
+            .background(color = Color.White)
     ) {
 
         Row(
@@ -130,6 +135,35 @@ fun LinkScreen_Success(dashBoard: DashBoardModel) {
 
         }
 
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(top = 110.dp)
+                .height(64.dp)
+                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                .align(Alignment.TopCenter),
+            color = BaseColor
+        ) {
+            LinkScreen_Success(value)
+        }
+    }
+
+
+}
+
+@Composable
+fun LinkScreen_Success(dashBoard: DashBoardModel) {
+
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+    ) {
+
+
         GreetingMessage()
         Text(
             text = "Ajay Manav 👋",
@@ -138,8 +172,11 @@ fun LinkScreen_Success(dashBoard: DashBoardModel) {
             fontSize = 24.sp
         )
 
+        GraphWidget()
+
         // Horizontal Scroll Analytics
         HorizontalAnalytics(dashBoard)
+
 
         // View Analytics
         IconWithText(
@@ -159,11 +196,12 @@ fun LinkScreen_Success(dashBoard: DashBoardModel) {
                 .size(24.dp)
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         // Link Tab List
         LinkTabList(dashBoard.data.top_links, dashBoard.data.recent_links)
 
         // View All Links
-
         IconWithText(
             icon = R.drawable.baseline_link_24,
             text = "View All Links",
@@ -209,11 +247,13 @@ fun LinkScreen_Success(dashBoard: DashBoardModel) {
                 .height(64.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .background(LightBlue)
-                .clip(RoundedCornerShape(10.dp)),
+                .border(1.dp, BorderBlue, RoundedCornerShape(10.dp))
+            ,
             iconModifier = Modifier
                 .padding(start = 16.dp)
                 .size(24.dp)
         )
+        Spacer(modifier = Modifier.height(120.dp))
 
     }
 

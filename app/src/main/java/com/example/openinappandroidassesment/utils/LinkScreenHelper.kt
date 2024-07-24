@@ -1,5 +1,7 @@
 package com.example.openinappandroidassesment.utils
 
+import android.graphics.drawable.GradientDrawable
+import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,12 +37,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.disk.DiskCache
@@ -51,6 +55,7 @@ import com.example.openinappandroidassesment.models.Link
 import com.example.openinappandroidassesment.ui.theme.BaseColor
 import com.example.openinappandroidassesment.ui.theme.Blue
 import com.example.openinappandroidassesment.ui.theme.FabColor
+import com.example.openinappandroidassesment.ui.theme.GradientBlue
 import com.example.openinappandroidassesment.ui.theme.LightBlue
 import com.example.openinappandroidassesment.ui.theme.LightPurple
 import com.example.openinappandroidassesment.ui.theme.LightRed
@@ -59,6 +64,12 @@ import com.example.openinappandroidassesment.ui.theme.Purple
 import com.example.openinappandroidassesment.ui.theme.Red
 import com.example.openinappandroidassesment.ui.theme.UnselectedColor
 import com.example.openinappandroidassesment.ui.theme.Yellow
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import java.util.Calendar
 
 
@@ -94,7 +105,8 @@ public fun LinkTabList(topLinkList: List<Link>, recentLinkList: List<Link>) {
             ) {
                 Text(
                     "Top Links", fontSize = 16.sp,
-                    color = if (topLink) Color.White else UnselectedColor
+                    color = if (topLink) Color.White else UnselectedColor,
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
             }
@@ -111,11 +123,14 @@ public fun LinkTabList(topLinkList: List<Link>, recentLinkList: List<Link>) {
             ) {
                 Text(
                     "Recent Links", fontSize = 16.sp,
-                    color = if (!topLink) Color.White else UnselectedColor
+                    color = if (!topLink) Color.White else UnselectedColor,
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
             }
 
         }
+
+
 
         Box(
             modifier = Modifier
@@ -133,6 +148,8 @@ public fun LinkTabList(topLinkList: List<Link>, recentLinkList: List<Link>) {
 
 
     }
+
+    Spacer(modifier = Modifier.height(16.dp))
 
     Column {
         list.take(4).forEach { link ->
@@ -171,7 +188,6 @@ fun LinkItem(link: Link, customImageLoader: ImageLoader) {
                 .fillMaxWidth()
                 .height(76.dp)
                 .clip(SharpBottomRoundedTopShape(8.dp)),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White,
             )
@@ -344,15 +360,19 @@ fun GreetingMessage() {
     Text(
         text = greeting,
         fontWeight = FontWeight.Light,
-        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
-        fontSize = 16.sp
+        modifier = Modifier.padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
+        fontSize = 16.sp,
+        color = Color.Gray
     )
 }
 
 @Composable
 fun HorizontalAnalytics(dashBoardModel: DashBoardModel) {
 
-    LazyRow {
+    LazyRow(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier
+    ) {
         item {
             AnalyticItem(
                 icon = R.drawable.clicks,
@@ -402,9 +422,8 @@ fun AnalyticItem(
         modifier = Modifier
             .padding(vertical = 8.dp, horizontal = 8.dp)
             .width(120.dp)
-            .height(120.dp)
             .clip(SharpBottomRoundedTopShape(8.dp)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         )
@@ -417,26 +436,186 @@ fun AnalyticItem(
 
             Box(
                 modifier = Modifier
-                    .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)
-                    .size(30.dp)
-                    .background(bgColor.copy(0.8f), RoundedCornerShape(15.dp))
-                ,
+                    .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 2.dp)
+                    .size(35.dp)
+                    .background(bgColor.copy(0.8f), RoundedCornerShape(15.dp)),
                 contentAlignment = Alignment.Center
-            ){
-                Icon(painter = painterResource(id = icon), contentDescription = null,tint=tint,
+            ) {
+                Icon(
+                    painter = painterResource(id = icon), contentDescription = null, tint = tint,
                     modifier = Modifier.size(20.dp)
                 )
             }
 
-            Text(text = value, fontSize = 16.sp, fontWeight = FontWeight.Medium,
+            Text(
+                text = value, fontSize = 16.sp, fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp, start = 8.dp, end = 8.dp)
             )
-            Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.Light,
+            Text(
+                text = text, fontSize = 14.sp, fontWeight = FontWeight.Light,
                 modifier = Modifier.padding(vertical = 2.dp, horizontal = 8.dp)
-                )
+            )
 
         }
     }
 
 
+}
+
+
+@Composable
+fun GraphWidget(modifier: Modifier = Modifier) {
+
+
+    // b'coz the overal_data_chart was returning null, so I had to create a dummy data
+    val xAxis = listOf(
+        0f, 1f, 2f, 2f, 3f, 4f, 5f, 6f, 7f, 8f
+    )
+    val yAxis = listOf(
+        10f, 25f, 30f, 50f, 80f, 75f, 100f, 50f, 25f, 100f, 75f
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White)
+                .padding(8.dp)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 0.dp)
+            ) {
+
+                Text(
+                    text = "Overview", fontSize = 14.sp, color = Color.Gray,
+                    modifier = Modifier.padding(8.dp)
+                )
+                TextWithIcon(
+                    text = "22 Aug - 23 Sept",
+                    R.drawable.clock,
+                    tint = Color.Gray
+                )
+            }
+
+            LineGraph(
+                xData = xAxis,
+                yData = yAxis,
+                dataLabel = "Experiment",
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+            )
+        }
+
+
+    }
+
+
+}
+
+@Composable
+fun TextWithIcon(text: String, icon: Int, tint: Color) {
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .padding(4.dp)
+            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+            .padding(vertical = 4.dp, horizontal = 8.dp)
+    ) {
+        Text(text = text, fontSize = 14.sp, color = Color.Black)
+        Spacer(modifier = Modifier.size(4.dp))
+        Icon(
+            painter = painterResource(id = icon), contentDescription = null, tint = tint,
+            modifier = Modifier.size(24.dp)
+        )
+    }
+
+}
+
+@Composable
+fun LineGraph(
+    xData: List<Float>,
+    yData: List<Float>,
+    dataLabel: String,
+    modifier: Modifier = Modifier,
+    lineColor: Color = FabColor, // Line color
+    fillColor: Color = FabColor, // Fill color
+    drawValues: Boolean = false, // Don't draw data values on points
+    drawMarkers: Boolean = false, // Draw markers (circles) on points
+    xAxisPosition: XAxis.XAxisPosition = XAxis.XAxisPosition.BOTTOM // X-axis position at the bottom
+) {
+    AndroidView(
+        modifier = modifier.fillMaxSize(),
+        factory = { context ->
+            val lineChart = LineChart(context)
+
+            val entries: List<Entry> = xData.zip(yData) { x, y -> Entry(x - 1, y) }
+            val dataSet = LineDataSet(entries, dataLabel).apply {
+                color = lineColor.toArgb()
+                setDrawValues(false)
+                setDrawCircles(false)
+                setDrawFilled(false)
+                lineWidth = 3f
+                //fillColor = fillColor.toArgb()
+                fillAlpha = 0
+                setDrawFilled(true)
+                fillDrawable = GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    intArrayOf(GradientBlue.toArgb(), Color.Transparent.toArgb())
+                )
+            }
+
+            lineChart.data = LineData(dataSet)
+
+            // Enable touch gestures
+            lineChart.setTouchEnabled(true)
+
+            lineChart.isScaleXEnabled = true
+            lineChart.isScaleYEnabled = true
+
+            // Additional styling
+            lineChart.description.isEnabled = false
+            lineChart.legend.isEnabled = false
+            lineChart.setDrawBorders(false)
+
+            lineChart.axisRight.isEnabled = false
+            lineChart.setDrawGridBackground(false)
+
+            lineChart.axisLeft.textColor = Color.Gray.toArgb()
+            lineChart.xAxis.textColor = Color.Gray.toArgb()
+            lineChart.xAxis.position = xAxisPosition
+            lineChart.xAxis.valueFormatter = IndexAxisValueFormatter(MONTH_LIST)
+
+
+            // Remove X and Y axis lines
+            lineChart.xAxis.setDrawAxisLine(false)
+            lineChart.axisLeft.setDrawAxisLine(false)
+            lineChart.axisRight.setDrawAxisLine(false)
+
+            lineChart.xAxis.granularity = 1f
+            lineChart.xAxis.axisMinimum = -0.5f
+            lineChart.axisLeft.granularity = 25f
+            lineChart.axisLeft.axisMinimum = 0f
+            lineChart.axisLeft.axisMaximum = 100f
+            lineChart.axisLeft.labelCount = 5
+
+            lineChart.xAxis.gridLineWidth = 0.5f
+            lineChart.axisLeft.gridLineWidth = 0.5f
+
+            lineChart.invalidate()
+            lineChart
+        }
+    )
 }

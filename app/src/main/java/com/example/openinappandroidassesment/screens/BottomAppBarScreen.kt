@@ -64,7 +64,7 @@ fun BottomAppBarScreen(navController: NavHostController, viewModel: MainViewMode
             modifier = Modifier
                 .fillMaxSize()
                 .background(BaseColor)
-                .padding(innerPadding)
+
         ) {
             NavGraph(navController, viewModel)
         }

@@ -8,8 +8,6 @@ import retrofit2.http.Header
 interface OpenInAppAPI {
 
     @GET("/api/v1/dashboardNew")
-    suspend fun getDashBoard(
-        @Header("Authorization") token: String
-    ) : Response<DashBoardModel>
+    suspend fun getDashBoard() : Response<DashBoardModel>
 
 }
